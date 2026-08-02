@@ -6,7 +6,7 @@ yc_webpage = response.text
 
 soup = BeautifulSoup(yc_webpage,"html.parser")
 
-## Finding news article link in span tag with class titleline:
+## Finding news articles Titles and their Links from Y Combinator's Hacker News
 
 article_texts = []
 article_links = []
