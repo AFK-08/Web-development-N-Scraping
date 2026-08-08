@@ -6,6 +6,8 @@ LOGIN_URL="https://app.100daysofpython.dev/services/share-a-naan/login"
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 
 ## Keep the Browser Open:
 chrome_options = webdriver.ChromeOptions()
@@ -18,6 +20,8 @@ class InstaFollower:
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.get(LOGIN_URL)
         self.driver.fullscreen_window()
+        self.wait = WebDriverWait(self.driver , 3)
+
 
     def login(self):
         input_username = self.driver.find_element(By.ID , value="username")
@@ -29,7 +33,7 @@ class InstaFollower:
         login_button.click()
 
         ## Save Info Pop up Dismiss
-        popup = self.driver.find_element(By.CLASS_NAME , value="naan-popup-dismiss")
+        popup = self.wait.until(ec.element_to_be_clickable((By.CLASS_NAME,"naan-popup-dismiss")))
         popup.click()
         popup.click()
 
