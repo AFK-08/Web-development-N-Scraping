@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+import time
 
 ## Keep the Browser Open:
 chrome_options = webdriver.ChromeOptions()
@@ -31,11 +32,18 @@ class InstaFollower:
         input_username.send_keys(USERNAME)
         input_password.send_keys(PASSWORD)
         login_button.click()
+        time.sleep(4)
 
-        ## Save Info Pop up Dismiss
-        popup = self.wait.until(ec.element_to_be_clickable((By.CLASS_NAME,"naan-popup-dismiss")))
-        popup.click()
-        popup.click()
+        ## Dismiss "Save your login info?" → "Not now"
+        save_info = self.driver.find_elements(By.XPATH, "//div[contains(text(), 'Not now')]")
+        if save_info:
+            save_info[0].click()
+        time.sleep(1)
+        ## Dismiss "Turn on notifications" → "Not Now"
+        notifications = self.driver.find_elements(By.XPATH, "//button[contains(text(), 'Not Now')]")
+        if notifications:
+            notifications[0].click()
+
 
     def find_followers(self):
         pass
