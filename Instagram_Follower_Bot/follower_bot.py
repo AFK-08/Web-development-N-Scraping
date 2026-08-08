@@ -2,12 +2,12 @@ SIMILAR_ACCOUNT="chefsteps"
 USERNAME="ahmadfkwj@gmail.com"
 PASSWORD="-b5KfZ5bGSMS-LI3"
 LOGIN_URL="https://app.100daysofpython.dev/services/share-a-naan/login"
+BASE_URL="https://app.100daysofpython.dev/services/share-a-naan"
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
+from selenium.common.exceptions import ElementClickInterceptedException
 import time
 
 ## Keep the Browser Open:
@@ -21,7 +21,6 @@ class InstaFollower:
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.get(LOGIN_URL)
         self.driver.fullscreen_window()
-        self.wait = WebDriverWait(self.driver , 3)
 
 
     def login(self):
@@ -46,9 +45,27 @@ class InstaFollower:
 
 
     def find_followers(self):
-        pass
+        self.driver.get(f"{BASE_URL}/u/{SIMILAR_ACCOUNT}/followers")
+        time.sleep(2)
+
+        # ## The scrollable element inside the followers dialog. Inspect to confirm the class.
+        # modal = self.driver.find_element(By.CSS_SELECTOR, ".followers-scroll _aano")
+
+        # for _ in range(10):
+        #     ## "scroll this element to the bottom" → loads the next batch of followers
+        #     self.driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", modal)
+        #     time.sleep(1)
 
 
     def follow(self):
-        pass
+        all_buttons = self.driver.find_elements(By.CSS_SELECTOR, ".followers-scroll button")
+        for button in all_buttons:
+            try:
+                button.click()
+                time.sleep(1)
+
+            except ElementClickInterceptedException:
+                # An "Unfollow?" dialog opened (you already follow this account).
+                cancel = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Cancel')]")
+                cancel.click()
 
