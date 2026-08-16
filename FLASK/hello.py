@@ -4,12 +4,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return "<h1 style='text-align:center'>Hello, World!</h1>"
 
 
 @app.route("/bye")
 def say_bye():
-    return "Good Bye"
+    return "<h1>Good</h1> <h2>Bye</h2>"
 
 ## Variables in Url:
 @app.route("/<name>")
