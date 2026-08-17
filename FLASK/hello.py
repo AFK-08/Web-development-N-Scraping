@@ -2,14 +2,22 @@ from flask import Flask
 
 app = Flask(__name__)
 
+def make_bold(function):
+    def wrapper():
+        return "<b>" + function() + "</b>"
+    return wrapper
+        
+
+
 @app.route("/")
+@make_bold
 def hello_world():
-    return "<h1 style='text-align:center'>Hello, World!</h1>"
+    return "Hello, World!"
 
 
 @app.route("/bye")
 def say_bye():
-    return "<h1>Good</h1> <h2>Bye</h2>"
+    return "Good Bye!"
 
 ## Variables in Url:
 @app.route("/<name>")
