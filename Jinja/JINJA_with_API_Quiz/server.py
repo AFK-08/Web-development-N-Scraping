@@ -23,6 +23,14 @@ def guess(name):
 
     return render_template("index.html",username=name,user_age=age,gender=gender)
 
+## For Multiline HTML page rendering, see example below:
+
+@app.route("/blog")
+def blog():
+
+    response = requests.get("https://api.npoint.io/c790b4d5cab58020d391")
+    all_posts = response.json()
+    return render_template("blog.html",posts=all_posts)
 
 if __name__ == "__main__":
     app.run(debug=True)
