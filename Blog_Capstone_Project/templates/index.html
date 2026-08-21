@@ -13,16 +13,25 @@
     </div>
     <div class="content">
         <div class="card">
-            <h2>Just a blog post</h2>
-            <p class="text">Lorem ipsum dolor sit </p>
-            <a href="#">Read</a>
+            {% for blog_post in posts: %}
+                 {% if blog_post["id"]==1: %}
+                    <h2>{{blog_post["title"]}}</h2>
+                    <p class="text">{{blog_post["subtitle"]}} </p>
+                    <a href="{{url_for('get_post', id=1)}}">Read</a>
+                 {% endif %}
+            {% endfor %}
+            
         </div>
     </div>
     <div class="content">
         <div class="card">
-            <h2>Another blog post</h2>
-            <p class="text">Lorem ipsum dolor sit </p>
-            <a href="#">Read</a>
+            {% for blog_post in posts: %}
+                {% if blog_post["id"]==2: %}
+                    <h2>{{blog_post["title"]}}</h2>
+                    <p class="text">{{blog_post["subtitle"]}} </p>
+                {% endif %}
+            {% endfor %}
+            <a href="{{url_for('get_post', id=2)}}">Read</a>
         </div>
     </div>
 </div>
