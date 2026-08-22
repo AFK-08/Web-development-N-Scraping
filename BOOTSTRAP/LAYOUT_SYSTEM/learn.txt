@@ -1,0 +1,3 @@
+Bootstrap 12 column layout system
+Learn responsiveness across different devices using:
+appbrewery/Bootstrap-layout
