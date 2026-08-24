@@ -17,7 +17,7 @@ def contact():
         phone = request.form.get("phone")
         message = request.form.get("message")
         print(username,email,phone,message)
-        return "<h1> Sucessfully sent data </h1>"
+        return render_template("contact.html")
     return render_template("contact.html")
 
 if __name__=="__main__":
