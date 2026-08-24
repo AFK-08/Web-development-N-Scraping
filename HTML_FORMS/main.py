@@ -5,6 +5,7 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
+
 @app.route("/login", methods=["POST"])
 def recieve_data():
     username_data = request.form.get("username")
