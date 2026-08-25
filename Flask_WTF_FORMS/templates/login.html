@@ -10,9 +10,13 @@
 
         <form method="POST" action="{{url_for('login')}}">
 			{{ form.csrf_token }}
-			{{ form.email.label }} {{ form.email(size=20) }}
-			{{ form.password.label }} {{ form.password(size=20) }}
-			<input type="submit" value="LOG	IN">
+			<p>
+				{{ form.email.label }} <br> {{ form.email(size=20) }}
+			</p>
+			<p>
+				{{ form.password.label }} <br> {{ form.password(size=20) }}
+			</p>
+			{{form.submit}}
 
 		</form>
         </div>
