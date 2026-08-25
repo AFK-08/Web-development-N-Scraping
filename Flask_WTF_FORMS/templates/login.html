@@ -1,3 +1,4 @@
+{% from 'bootstrap5/form.html' import render_form %}
 <!DOCTYPE HTML>
 
 <html>
@@ -8,7 +9,7 @@
         <div class="container">
 		<h1>Login</h1>
 
-        <form method="POST" action="{{url_for('login')}}" novalidate>
+        <!-- <form method="POST" action="{{url_for('login')}}" novalidate>
 			{{ form.csrf_token }}
 			<p>
 				{{ form.email.label }} <br> {{ form.email(size=20) }}
@@ -23,8 +24,12 @@
 				{%endfor%}
 			</p>
 			{{form.submit}}
+		</form> -->
 
-		</form>
+		<!-- OR YOU CAN SIMPLY USE USING BOOTSTRAP RENDER_FORM: -->
+
+		 {{render_form(form)}}
+		 
         </div>
 	</body>
 </html>
