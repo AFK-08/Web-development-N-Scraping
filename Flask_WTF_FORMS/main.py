@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField
 from wtforms.validators import DataRequired,Email,Length
+from flask_bootstrap import Bootstrap5
 
 ## Making Login_Form Class with feilds for data entry:
 class Login_Form(FlaskForm):
@@ -13,6 +14,10 @@ class Login_Form(FlaskForm):
 
 ## Creating a Flask Server:
 app = Flask(__name__)
+
+## Using Flask_Bootsrap to load css:
+bootstrap = Bootstrap5(app)
+
 ## WTF FORM CSFR key:
 app.secret_key = 'mysecretkey'
 
