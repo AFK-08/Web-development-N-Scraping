@@ -60,6 +60,20 @@ def add():
         return redirect(url_for('home'))
     return render_template("add.html")
 
+## EDIT RATING PAGE:
+@app.route("/edit/<id>",methods=["GET","POST"])
+def edit(id):
+    if request.method=="POST":
+        with app.app_context():
+            rating_change = database.session.get(Books,id)
+            rating_change.rating = request.form.get("rating")
+            database.session.commit()
+        return redirect(url_for('home'))
+        
+    with app.app_context():
+            edit_book = database.session.get(Books,id)
+    return render_template("edit.html",book=edit_book)
+
 
 
 if __name__ == "__main__":
