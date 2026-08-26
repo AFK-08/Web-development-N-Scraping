@@ -70,6 +70,14 @@ def edit():
         return redirect(url_for('home'))
     return render_template("edit.html",form=form,movie=movie_to_update)
 
+## Delete Movie Record:
+@app.route("/delete")
+def delete():
+    movie_id = request.args.get("id")
+    delete_movie = database.session.query(Movies).get(movie_id)
+    database.session.delete(delete_movie)
+    database.session.commit()
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
