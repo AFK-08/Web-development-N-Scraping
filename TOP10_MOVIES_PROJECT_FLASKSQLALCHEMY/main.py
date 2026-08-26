@@ -79,5 +79,23 @@ def delete():
     database.session.commit()
     return redirect(url_for('home'))
 
+## Creating the Add Movie Form:
+class AddForm(FlaskForm):
+    title = StringField(label="Movie Title", validators=[DataRequired()])
+    submit = SubmitField(label="Add Movie")
+
+## ADD a New Movie Record:
+@app.route("/add", methods=["GET","POST"])
+def add():
+    form = AddForm()
+    if form.validate_on_submit():
+        movie_title = form.title.data
+        ## Make an API Call to fetch the movie details:
+        response = requests.get(f"https://api.themoviedb.org/3/search/movie?api_key=YOUR_API_KEY&query={movie_title}")
+        data = response.json()
+        results = data["results"]
+        return render_template("select.html", options=results)
+    return render_template("add.html", form=form)
+
 if __name__ == '__main__':
     app.run(debug=True)
