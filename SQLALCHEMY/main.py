@@ -32,10 +32,27 @@ class Books(database.Model):
 with app.app_context():
     database.create_all()
 
-## Creating a RECORD:
+# ## Creating a RECORD:
+# with app.app_context():
+#     new_book = Books(id=1,title="Harry Potter",author="JK Rowling",rating=9.5)
+
+#     database.session.add(new_book)
+#     database.session.commit()
+
+## Read All Records:
 with app.app_context():
-    new_book = Books(id=1,title="Harry Potter",author="JK Rowling",rating=9.5)
+    result = database.session.execute(database.select(Books).order_by(Books.title))
 
-    database.session.add(new_book)
-    database.session.commit()
+    all_books = result.scalars()
+    for book in all_books:
+        print(book.title)
 
+## Update a Record:
+with app.app_context():
+    book_to_update = database.session.execute(database.select(Books).where(Books.title == "Harry Potter and the Chamber of Secrets")).scalar()
+
+    book_to_update.title = "Harry Potter"
+
+    database.session.commit() 
+
+## You can also delete a record as above with some tweaks..
