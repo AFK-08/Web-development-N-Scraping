@@ -8,32 +8,45 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests
 
-'''
-Red underlines? Install the required packages first: 
-Open the Terminal in PyCharm (bottom left). 
-
-On Windows type:
-python -m pip install -r requirements.txt
-
-On MacOS type:
-pip3 install -r requirements.txt
-
-This will install the packages from requirements.txt for this project.
-'''
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
-# CREATE DB
+## CREATE DATABASE
+class Base(DeclarativeBase):
+    pass
+## Configure the SQLite database, relative to the app instance folder:
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///movies.db"
 
+## Creating the Extension:
+database = SQLAlchemy(model_class=Base)
 
-# CREATE TABLE
+## Initialize the app with the extension:
+database.init_app(app)
+
+## Creating the TABLE:
+class Movies(database.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(unique=True, nullable=False)
+    year: Mapped[int] = mapped_column(nullable=False)
+    description: Mapped[str] = mapped_column(nullable=True)
+    rating: Mapped[float] = mapped_column(nullable=True)
+    ranking: Mapped[int] = mapped_column(nullable=True)
+    review: Mapped[str] = mapped_column(nullable=True)
+    img_url: Mapped[str] = mapped_column(nullable=True)
+
+## Creating Table Schema in the database:
+with app.app_context():
+    database.create_all()
 
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    ## Read All Records:
+    with app.app_context():
+        all_movies = database.session.query(Movies).all()
+    return render_template("index.html",movies=all_movies)
+
 
 
 if __name__ == '__main__':
