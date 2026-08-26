@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap5(app)
 
+
 ## CREATE DATABASE
 class Base(DeclarativeBase):
     pass
@@ -40,6 +41,14 @@ with app.app_context():
     database.create_all()
 
 
+
+## Creating the Update Form:
+class UpdateForm(FlaskForm):
+    rating = StringField(label="Your Rating Out of 10 e.g. 7.5", validators=[DataRequired()])
+    review = StringField(label="Your Review", validators=[DataRequired()])
+    submit = SubmitField(label="Done")
+
+## Read All Records and Display on Home Page:  
 @app.route("/")
 def home():
     ## Read All Records:
@@ -47,6 +56,19 @@ def home():
         all_movies = database.session.query(Movies).all()
     return render_template("index.html",movies=all_movies)
 
+## Edit Movie Record:
+@app.route("/edit", methods=["GET","POST"])
+def edit():
+    ### Create Form Object:
+    form = UpdateForm()
+    movie_id = request.args.get("id")
+    movie_to_update = database.session.query(Movies).get(movie_id)
+    if form.validate_on_submit():
+        movie_to_update.rating = float(form.rating.data)
+        movie_to_update.review = form.review.data
+        database.session.commit()
+        return redirect(url_for('home'))
+    return render_template("edit.html",form=form,movie=movie_to_update)
 
 
 if __name__ == '__main__':
