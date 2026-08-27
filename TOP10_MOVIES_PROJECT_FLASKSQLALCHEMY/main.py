@@ -56,6 +56,11 @@ def home():
         all_movies = database.session.query(Movies).all()
     return render_template("index.html",movies=all_movies)
 
+    ## Sort the records based on rating and assign ranking:
+    for i in range(len(all_movies)):
+        all_movies[i].ranking = len(all_movies) - i
+    database.session.commit()
+
 ## Edit Movie Record:
 @app.route("/edit", methods=["GET","POST"])
 def edit():
@@ -91,7 +96,7 @@ def add():
     if form.validate_on_submit():
         movie_title = form.title.data
         ## Make an API Call to fetch the movie details:
-        response = requests.get(f"https://api.themoviedb.org/3/search/movie?api_key=YOUR_API_KEY&query={movie_title}")
+        response = requests.get(f"https://api.themoviedb.org/3/search/movie?api_key=API_KEY & query={movie_title}")
         data = response.json()
         results = data["results"]
         return render_template("select.html", options=results)
