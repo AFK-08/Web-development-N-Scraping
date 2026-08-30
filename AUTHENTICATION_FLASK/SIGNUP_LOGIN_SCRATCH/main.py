@@ -8,20 +8,16 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, cur
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 
-# CREATE DATABASE
-
+## CREATE DATABASE
 
 class Base(DeclarativeBase):
     pass
-
-
+## CREATING CONNECTION:
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
-# CREATE TABLE IN DB
-
-
+## CREATE TABLE IN DB
 class User(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
@@ -38,8 +34,17 @@ def home():
     return render_template("index.html")
 
 
-@app.route('/register')
+@app.route('/register',methods=["GET","POST"])
 def register():
+    if request.method=="POST":
+        with app.app_context():
+            new_user = User(email=request.form.get("email"),
+                            name=request.form.get("name"),
+                            password=request.form.get("password"))
+            db.session.add(new_user)
+            db.session.commit()
+        return render_template("secrets.html",name=request.form.get("name"))
+    
     return render_template("register.html")
 
 
