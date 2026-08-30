@@ -17,8 +17,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
+## Configuring the Flask Login's Manager:
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+## Create a user_loader callback
+@login_manager.user_loader
+def load_user(user_id):
+    return db.get_or_404(User, user_id)
+
+
 ## CREATE TABLE IN DB
-class User(db.Model):
+class User(UserMixin, db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
     password: Mapped[str] = mapped_column(String(100))
@@ -38,33 +48,53 @@ def home():
 def register():
     ## Adding User Record in Database:
     if request.method=="POST":
-        with app.app_context():
-            new_user = User(email=request.form.get("email"),
-                            name=request.form.get("name"),
-                            password=request.form.get("password"))
-            db.session.add(new_user)
-            db.session.commit()
-        return render_template("secrets.html",name=request.form.get("name"))
+        ## Hashing and Salting Password Entered by User:
+        hashed_salted_password = generate_password_hash(
+                                 password=request.form.get("password"),method="pbkdf2:sha256",salt_length=5)
+        ## User Record in Database:
+        new_user = User(email=request.form.get("email"),
+                        name=request.form.get("name"),
+                        password=hashed_salted_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        ## Log in and authenticate user after adding details to database.
+        login_user(new_user)
+        return redirect(url_for("secrets"))
     
     return render_template("register.html")
 
+## LOGIN Page:
 
-@app.route('/login')
+@app.route('/login',methods=["GET","POST"])
 def login():
+    if request.method=="POST":
+        email = request.form.get('email')
+        password = request.form.get('password')
+        ## Find user by email entered.
+        result = db.session.execute(db.select(User).where(User.email == email))
+        user = result.scalar()
+        ## Checking Password Correct:
+        if check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for("secrets"))
     return render_template("login.html")
 
 
 @app.route('/secrets')
+@login_required
 def secrets():
-    return render_template("secrets.html")
+    return render_template("secrets.html",name=current_user.name)
 
 
 @app.route('/logout')
 def logout():
-    pass
+    logout_user()
+    return redirect(url_for("home"))
 
 ## Download the file on Secrets PAGE:
 @app.route('/download')
+@login_required
 def download():
     return send_from_directory("static",path="files/cheat_sheet.pdf")
 
