@@ -28,14 +28,15 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-
+## Home Page:
 @app.route('/')
 def home():
     return render_template("index.html")
 
-
+## Register the Users:
 @app.route('/register',methods=["GET","POST"])
 def register():
+    ## Adding User Record in Database:
     if request.method=="POST":
         with app.app_context():
             new_user = User(email=request.form.get("email"),
@@ -62,10 +63,11 @@ def secrets():
 def logout():
     pass
 
-
+## Download the file on Secrets PAGE:
 @app.route('/download')
 def download():
-    pass
+    return send_from_directory("static",path="files/cheat_sheet.pdf")
+
 
 
 if __name__ == "__main__":
